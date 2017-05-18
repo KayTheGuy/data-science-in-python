@@ -15,9 +15,7 @@ def pivot_months_pandas(data):
     # make monthly precipitation totals data
     #=======================================
     # Add month column with <date_to_month> function applied to <date> column
-    # Remove <date> column
     data['month'] = data['date'].apply(date_to_month)
-    data.drop('date', axis=1, inplace=True)
 
     # aggregate over columns <name> and <month> and apply sum() method
     totals_grouped = data.groupby(['name', 'month'], as_index=False).sum()
@@ -102,10 +100,10 @@ def main():
     np.savez('monthdata.npz', totals=totals.values, counts=counts.values)
 
     # create csv and npz files with Pandas 
-    monthly, counts2 = pivot_months_pandas(data)
-    monthly.to_csv('pandas_totals.csv')
-    counts2.to_csv('pandas_counts.csv')
-    np.savez('pandas_monthdata.npz', totals=monthly.values, counts=counts2.values)
+    # monthly, counts2 = pivot_months_pandas(data)
+    # monthly.to_csv('pandas_totals.csv')
+    # counts2.to_csv('pandas_counts.csv')
+    # np.savez('pandas_monthdata.npz', totals=monthly.values, counts=counts2.values)
 
 
 if __name__ == '__main__':
