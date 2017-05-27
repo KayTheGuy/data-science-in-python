@@ -22,8 +22,8 @@ def plot(x, y1, y2, y3):
     plt.plot(x, y2, 'r-', alpha=0.5)
     plt.plot(x, y3, 'g-', alpha=0.5)
     plt.legend(['RAW', 'LOESS', 'KALMAN'])
-    plt.show()  # easier for testing
-    # plt.savefig('cpu.svg') # for final submission
+    # plt.show()  # easier for testing
+    plt.savefig('cpu.svg') # for final submission
 
 
 def main():
@@ -43,10 +43,10 @@ def main():
     kalman_data = cpu_data[['temperature', 'cpu_percent']]
     # get the first data point
     initial_state = kalman_data.iloc[0]
-    observation_covariance = [[10 ** 2, 0],
-                              [0, 10 ** 2]]    # observation_stddev = ?
-    transition_covariance = [[1 ** 2, 0],
-                             [0, 1 ** 2]]    # transition_stddev = ?
+    observation_covariance = [[4 ** 2, 0],
+                              [0, 50 ** 2]]    # 2 degree temperature and 50 % cpu usage deviation
+    transition_covariance = [[0.5 ** 2, 0],
+                             [0, 50 ** 2]]     # 2 degree temperature and 50 % cpu usage deviation
     transition_matrix = [[1, 0.125], [0, 1]]
     # create Kalman filter
     kf = KalmanFilter(initial_state_mean=initial_state,
@@ -63,6 +63,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
-
