@@ -20,7 +20,7 @@ def read_files():
         global out_csv
         out_csv = sys.argv[3]
         # read text file
-        valid_titles = pd.read_csv(sys.argv[1], header=None, names=["title"])
+        valid_titles = pd.read_csv(sys.argv[1], header=None, names=["title"], delimiter = '\n')
         # read csv file
         ratings = pd.read_csv(sys.argv[2])
         return valid_titles, ratings
