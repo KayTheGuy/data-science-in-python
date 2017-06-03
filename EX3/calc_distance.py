@@ -50,7 +50,6 @@ def distance(gps_points):
     # get adjacent points in the same row
     adjacent_latitudes = gps_points['lat'].shift(-1)
     adjacent_longitudes = gps_points['lon'].shift(-1)
-
     def distance_helper(lat1, lon1, lat2, lon2):
         """ Return the distance between two points (Haversine formula)"""
         # taken from:

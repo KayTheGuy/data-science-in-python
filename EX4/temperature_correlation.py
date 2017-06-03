@@ -6,8 +6,6 @@ import difflib as dl
 import matplotlib.pyplot as plt
 from math import cos, asin, sqrt
 
-# movie titles
-possible_titles = []
 
 # dataframes containing weather stations and cities
 df_stations = pd.DataFrame()

@@ -1,14 +1,14 @@
 import sys
 import pandas as pd
-import matplotlib.pyplot as plt
 import statsmodels.api as sm
+import matplotlib.pyplot as plt
 from pykalman import KalmanFilter
 
 
 def read_file():
     """ Return the data from csv file """
     # get csv file name
-    if len(sys.argv) >= 1:
+    if len(sys.argv) >= 2:
         data = pd.read_csv(sys.argv[1], parse_dates=[2])
         return data
     else:
