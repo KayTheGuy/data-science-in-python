@@ -32,10 +32,10 @@ def main():
     """ The provided searches.json has information about users' usage of the “search” feature, 
     which is where the A/B test happened. Users with an odd-numbered uid were shown a 
     new-and-improved search box. Others were shown the original design.
-
-    Did more users use the search feature? 
+    Questions:
+    1) Did more users use the search feature? 
                         (More precisely: did a different fraction of users have search count > 0?)
-    Did users search more often? 
+    2) Did users search more often? 
                         (More precisely: is the number of searches per user different?)
     """
 
@@ -46,20 +46,54 @@ def main():
     # users that used old search
     used_B = even_users[even_users['search_count'] > 0]
 
+    # construct the contigency table for question 1:
+    #
+    #                                       new search(A)         old search(B)
+    #  number of users using feature:
+    #  number of users not using feature:
+
+    used_A_count = used_A.shape[0]
+    used_B_count = used_B.shape[0]
+
+    A_total = odd_users.shape[0]
+    B_total = even_users.shape[0]
+
+    contigency_table = [[used_A_count, used_B_count],
+                        [A_total - used_A_count, B_total - used_B_count]]
+    _, p1, _, _ = stats.chi2_contingency(contigency_table)
+
+    # instructors with odd uid
+    instr_odd_users = odd_users[odd_users['is_instructor'] == True]
     # instructors that used new search
     instr_used_A = used_A[used_A['is_instructor'] == True]
+    # instructors with even uid
+    instr_even_users = even_users[even_users['is_instructor'] == True]
     # instructors that used old search
     instr_used_B = used_B[used_B['is_instructor'] == True]
 
-    # # Output
-    # print(OUTPUT_TEMPLATE.format(
-    #     more_users_p=stats.chi2_contingency(,
-    #     more_searches_p=stats.mannwhitneyu(
-    #         used_A['search_count'], used_B['search_count']).pvalue,
-    #     more_instr_p=0,
-    #     more_instr_searches_p=stats.mannwhitneyu(
-    #         instr_used_A['search_count'], instr_used_B['search_count']).pvalue,
-    # ))
+    instr_used_A_count = instr_used_A.shape[0]
+    instr_used_B_count = instr_used_B.shape[0]
+
+    instr_A_total = instr_odd_users.shape[0]
+    instr_B_total = instr_even_users.shape[0]
+
+    contigency_table = [[instr_used_A_count, instr_used_B_count],
+                        [instr_A_total - instr_used_A_count, instr_B_total - instr_used_B_count]]
+    _, p2, _, _ = stats.chi2_contingency(contigency_table)
+
+    # answering question 2:
+    p3 = stats.mannwhitneyu(
+        even_users['search_count'], odd_users['search_count']).pvalue
+    p4 = stats.mannwhitneyu(
+        instr_even_users['search_count'], instr_odd_users['search_count']).pvalue
+
+    # Output
+    print(OUTPUT_TEMPLATE.format(
+        more_users_p=p1,
+        more_searches_p=p3,
+        more_instr_p=p2,
+        more_instr_searches_p=p4,
+    ))
 
 
 if __name__ == '__main__':

@@ -1,7 +1,6 @@
 import time
 import numpy as np
 import pandas as pd
-from scipy import stats
 from implementations import all_implementations
 
 def main():
@@ -17,7 +16,7 @@ def main():
             st = time.time()
             res = sort(random_array)
             en = time.time()
-            data = data.append({'sort_type': sort.__name__, 'run_time': (en-st)}, ignore_index=True)
+            data = data.append({'sort_type': str(sort.__name__), 'run_time': (en-st)}, ignore_index=True)
 
     
     # save data
