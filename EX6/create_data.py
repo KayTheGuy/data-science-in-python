@@ -10,8 +10,8 @@ def main():
     """
     data = pd.DataFrame(columns=['sort_type', 'run_time'])
 
-    for i in range(0,40):
-        random_array = np.random.randint(1, 1000, dtype='int', size=100)
+    for i in range(0,400):
+        random_array = np.random.randint(1, 1000, dtype='int', size=400)
         for sort in all_implementations:
             st = time.time()
             res = sort(random_array)

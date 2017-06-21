@@ -50,7 +50,7 @@ def main():
     #
     #                                       new search(A)         old search(B)
     #  number of users using feature:
-    #  number of users not using feature:
+    #  total number of users:
 
     used_A_count = used_A.shape[0]
     used_B_count = used_B.shape[0]
@@ -59,7 +59,7 @@ def main():
     B_total = even_users.shape[0]
 
     contigency_table = [[used_A_count, used_B_count],
-                        [A_total - used_A_count, B_total - used_B_count]]
+                        [A_total , B_total]]
     _, p1, _, _ = stats.chi2_contingency(contigency_table)
 
     # instructors with odd uid
@@ -78,7 +78,7 @@ def main():
     instr_B_total = instr_even_users.shape[0]
 
     contigency_table = [[instr_used_A_count, instr_used_B_count],
-                        [instr_A_total - instr_used_A_count, instr_B_total - instr_used_B_count]]
+                        [instr_A_total, instr_B_total]]
     _, p2, _, _ = stats.chi2_contingency(contigency_table)
 
     # answering question 2:
