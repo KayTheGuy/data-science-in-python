@@ -11,7 +11,7 @@ def main():
     data = pd.DataFrame(columns=['sort_type', 'run_time'])
 
     for i in range(0,400):
-        random_array = np.random.randint(1, 1000, dtype='int', size=400)
+        random_array = np.random.randint(1, 1000, size=700)
         for sort in all_implementations:
             st = time.time()
             res = sort(random_array)
