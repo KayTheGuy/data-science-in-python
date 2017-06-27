@@ -1,8 +1,9 @@
+import sys
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import sys
 from pykalman import KalmanFilter
+from sklearn.linear_model import LinearRegression
 
 
 columns = ['temperature', 'cpu_percent', 'fan_rpm', 'sys_load_1']
@@ -15,7 +16,9 @@ def get_data(filename):
     Read the given CSV file. Return (sysinfo DataFrame, array of X (input) values, array of y (known output) values).
     """
     sysinfo = pd.read_csv(filename, parse_dates=[0])
-    sysinfo['next_temp'] = 30  # TODO: fill in the to-be-predicted temperature
+    # the to-be-predicted temperature
+    # fill the last row's temp value with 30 
+    sysinfo['next_temp'] = sysinfo['temperature'].shift(-1).fillna(30).astype(int) 
     return sysinfo, sysinfo[columns].values, sysinfo['next_temp'].values
 
 
@@ -27,8 +30,9 @@ def get_trained_coefficients():
     """
     _, X_train, y_train = get_data(training_data_file)
 
-    # TODO: create regression model and train.
-
+    model = LinearRegression(fit_intercept=False)
+    model.fit(X_train, y_train)
+    coefficients = model.coef_
     return model, coefficients
 
 
@@ -36,7 +40,8 @@ def output_regression(coefficients):
     """
     Print a human-readable summary of the regression results.
     """
-    regress = ' + '.join('%.3g*%s' % (coef, col) for col, coef in zip(columns, coefficients))
+    regress = ' + '.join('%.3g*%s' % (coef, col)
+                         for col, coef in zip(columns, coefficients))
     print('next_temp = ' + regress)
 
 
@@ -48,7 +53,6 @@ def plot_errors(model):
 
 def smooth_test(coef):
     sysinfo, X_test, _ = get_data(testing_data_file)
-
     # feel free to tweak these if you think it helps.
     transition_stddev = 1.5
     observation_stddev = 2.0
@@ -58,9 +62,7 @@ def smooth_test(coef):
     initial = X_test[0]
     observation_covariance = np.diag([observation_stddev, 2, 10, 1]) ** 2
     transition_covariance = np.diag([transition_stddev, 80, 100, 10]) ** 2
-    transition = np.eye(dims) # transition = identity for all variables
-
-    # TODO: update transition to incorporate coef  # ... except temperature, which was the point of all this.
+    transition = np.diag([1, coef[1], coef[2], coef[3]])
 
     kf = KalmanFilter(
         initial_state_mean=initial,
