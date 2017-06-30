@@ -62,7 +62,9 @@ def smooth_test(coef):
     initial = X_test[0]
     observation_covariance = np.diag([observation_stddev, 2, 10, 1]) ** 2
     transition_covariance = np.diag([transition_stddev, 80, 100, 10]) ** 2
-    transition = np.diag([1, coef[1], coef[2], coef[3]])
+    transition = np.zeros((4, 4))
+    # add additional information about data
+    transition[0] = [coef[0], coef[1], coef[2], coef[3]] 
 
     kf = KalmanFilter(
         initial_state_mean=initial,
