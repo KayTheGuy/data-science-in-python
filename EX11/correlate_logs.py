@@ -42,11 +42,14 @@ def main():
     logs = spark.createDataFrame(create_row_rdd(in_directory))
 
     groups = logs.groupBy('hostname')
+
     data_points = groups.agg(
                             functions.count(logs['hostname']).alias('req_count'),
                             functions.sum(logs['bytes']).alias('req_bytes')
-                            )
+                            ).cache()
+
     one_group = data_points.groupBy()
+
     six_sums = one_group.agg(
                             functions.count(data_points['req_count']).alias('n'),
                             functions.sum(data_points['req_count']).alias('x'),
@@ -54,7 +57,8 @@ def main():
                             functions.sum(data_points['req_bytes'] * data_points['req_count']).alias('xy'),
                             functions.sum(data_points['req_count'] * data_points['req_count']).alias('x2'),
                             functions.sum(data_points['req_bytes'] * data_points['req_bytes']).alias('y2')
-                            ).first()                       
+                            ).first()     
+                                              
     n = six_sums['n']
     x = six_sums['x']
     y = six_sums['y']
